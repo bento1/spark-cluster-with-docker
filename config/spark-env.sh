@@ -68,6 +68,6 @@ export SPARK_EXECUTOR_MEMORY=1G
 # - SPARK_NO_DAEMONIZE  Run the proposed command in the foreground. It will not output a PID file.
 
 export SPARK_HOME=/usr/local/spark
-export PYSPARK_PYTHON=python3.7
+export PYSPARK_PYTHON=python3.8
 export PYSPARK_DRIVER_PYTHON=jupyter
 export PYSPARK_DRIVER_PYTHON_OPTS='notebook'

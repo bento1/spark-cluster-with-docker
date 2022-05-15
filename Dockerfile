@@ -1,22 +1,25 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 WORKDIR /root
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
     python3-pip \
     openssh-server \
     nano \
     openjdk-8-jdk \
-    python3.7
+    python3.8
 
-RUN pip3 install jupyter && \
+RUN pip3 install markupsafe && \
+    pip3 install packaging && \
+    pip3 install jupyter && \
     pip3 install pyspark
 
 # download hadoop
-RUN wget https://archive.apache.org/dist/hadoop/common/hadoop-2.7.7/hadoop-2.7.7.tar.gz && \
-    tar -xzf hadoop-2.7.7.tar.gz && \
-    mv hadoop-2.7.7 /usr/local/hadoop && \
-    rm hadoop-2.7.7.tar.gz
+RUN wget https://archive.apache.org/dist/hadoop/common/hadoop-3.3.2/hadoop-3.3.2.tar.gz && \
+    tar -xzf hadoop-3.3.2.tar.gz && \
+    mv hadoop-3.3.2 /usr/local/hadoop && \
+    rm hadoop-3.3.2.tar.gz
 
 # download spark
 RUN wget https://dlcdn.apache.org/spark/spark-3.2.1/spark-3.2.1-bin-hadoop2.7.tgz && \
@@ -31,7 +34,7 @@ ENV SPARK_HOME=/usr/local/spark
 ENV SPARK_MASTER_PORT 7077
 ENV HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
 ENV LD_LIBRARY_PATH=/usr/local/hadoop/lib/native
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-arm64
 ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:/usr/local/spark/bin
 
 # ssh without key
@@ -53,6 +56,9 @@ RUN mv /tmp/ssh_config ~/.ssh/config && \
     mv /tmp/spark-env.sh $SPARK_HOME/conf/spark-env.sh && \
     mv /tmp/spark-default.conf $SPARK_HOME/conf/spark-default.conf && \
     mv /tmp/start-cluster.sh ~/start-cluster.sh
+
+# change autho
+RUN chmod 755 ~/start-cluster.sh
 
 # create spark-events directory
 RUN mkdir /tmp/spark-events && \
